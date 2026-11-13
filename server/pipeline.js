@@ -179,6 +179,7 @@ export function stepPlan(p, log, { durationHint } = {}) {
       duckDb: cfg.audio.duckDb, fadeOut: cfg.audio.fadeOut,
     },
     notes: plan.notes,
+    output: prev?.output || { format: 'original' },
     template: p.template ? { video: p.templateVideo, duration: p.template.duration, mapping: plan.mapping, timeScale: plan.timeScale } : null,
   };
   if (p.template?.perLayer && p.mode === 'flat') tl.notes.unshift({ level: 'warn', text: 'Mẫu có chuyển động riêng từng lớp nhưng KV là ảnh phẳng: preview chỉ dùng hiệu ứng khả thi trên toàn ảnh. Xem danh sách lớp cần bổ sung bên dưới.' });

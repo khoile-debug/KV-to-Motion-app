@@ -183,20 +183,35 @@ function renderRenders() {
   const j = S.job?.type === 'render' ? S.job : null;
   const rs = S.project.renders || [];
   const lastErr = S.project.lastError?.type === 'render' ? S.project.lastError : null;
+  const O = S.timeline.output || {};
+  const fmts = Object.entries(CFG.outputFormats || { original: { label: 'Gốc' } });
   box.innerHTML = `
+    <div class="row" style="margin-bottom:10px">
+      <label class="f">Khổ video<select id="fmtSel" ${j?.status === 'running' ? 'disabled' : ''}>${opt(fmts.map(([k, v]) => [k, v.label]), O.format || 'original')}</select></label>
+      ${O.format && O.format !== 'original' ? `<label class="f">Nền phần thừa<select id="fillSel">${opt([['blur', 'Mờ từ KV'], ['color', 'Màu đơn']], O.fill || 'blur')}</select></label>
+      ${(O.fill || 'blur') === 'color' ? `<label class="f">Màu<input type="color" id="fillCol" value="${O.fillColor || S.timeline.canvas.background || '#000000'}"></label>` : ''}
+      <label class="row small" style="align-self:flex-end;padding-bottom:6px"><input type="checkbox" id="safeChk" ${O.safeArea !== false ? 'checked' : ''}> Chừa vùng an toàn TikTok</label>` : ''}
+    </div>
     <div class="row"><button class="primary" id="renderBtn" ${j?.status === 'running' || S.dirty ? 'disabled' : ''}>⬇ Xuất MP4</button>
       ${S.dirty ? '<span class="dirty">Có thay đổi chưa lưu — bấm "Lưu & cập nhật preview" trước khi xuất.</span>' : '<span class="muted small">Dùng đúng composition của preview (HyperFrames + GSAP).</span>'}</div>
     ${j?.status === 'running' ? `<div style="margin-top:10px"><div class="bar"><i style="width:${j.progress || 0}%"></i></div><div class="muted small" style="margin-top:4px">${j.steps[0].status === 'queued' ? 'Đang chờ lượt render…' : `Đang render… ${j.progress || 0}% ${j.steps[0].detail || ''}`}</div></div>` : ''}
     ${j?.status === 'error' || (!j && lastErr) ? `<div class="err" style="margin-top:10px">${h(j?.error || lastErr.message)}</div><button class="small" id="rRetry" style="margin-top:8px">↻ Thử lại</button>` : ''}
     <div class="renders" style="margin-top:8px">${rs.map((r) => `<a href="/projects/${S.id}/${r.file}" download>🎬 ${h(r.file.split('/').pop())}</a><span class="muted small">${r.width}×${r.height} · ${r.duration.toFixed(2)}s · ${(r.size / 1e6).toFixed(1)} MB · ${r.hasAudio ? 'có âm thanh' : 'không âm thanh'}</span>`).join('') || '<span class="muted small">Chưa có bản xuất.</span>'}</div>
     ${rs[0] ? `<video src="/projects/${S.id}/${rs[0].file}?v=${rs[0].at}" controls style="width:100%;max-height:320px;margin-top:8px;border-radius:8px;background:#000"></video>` : ''}`;
+  const setOut = (patch) => { S.timeline.output = { ...(S.timeline.output || {}), ...patch }; S.dirty = true; save(); };
+  $('#fmtSel').onchange = (e) => setOut({ format: e.target.value });
+  if ($('#fillSel')) $('#fillSel').onchange = (e) => setOut({ fill: e.target.value });
+  if ($('#fillCol')) $('#fillCol').onchange = (e) => setOut({ fillColor: e.target.value });
+  if ($('#safeChk')) $('#safeChk').onchange = (e) => setOut({ safeArea: e.target.checked });
   $('#renderBtn').onclick = async () => { try { await api(`/api/projects/${S.id}/render`, { method: 'POST' }); } catch (e) { toast(e.message); } };
   if ($('#rRetry')) $('#rRetry').onclick = async () => { try { await api(`/api/projects/${S.id}/render`, { method: 'POST' }); } catch (e) { toast(e.message); } };
 }
 
 // ------------------------------------------------------------------ player (same composition as the MP4)
 function setupPlayer() {
-  const tl = S.timeline, W = tl.canvas.width, H = tl.canvas.height;
+  const tl = S.timeline;
+  const F = CFG.outputFormats?.[tl.output?.format];
+  const W = F?.width || tl.canvas.width, H = F?.height || tl.canvas.height;
   const hasTpl = !!tl.template?.video;
   const avail = Math.max(320, ($('#previews').clientWidth || 700) - 4);
   const tplAR = S.project.template?.aspect || 1;
@@ -208,12 +223,17 @@ function setupPlayer() {
   $('#previews').innerHTML = `
     <div class="pv"><div class="frame" id="frame" style="width:${fw}px;height:${fh}px">
       <iframe id="comp" src="/projects/${S.id}/build/index.html?v=${Date.now()}" style="width:${W}px;height:${H}px;transform:scale(${sc})"></iframe>
-      <div class="hit" id="hit"></div></div><div class="lbl">Bản dựng · ${W}×${H} · ${tl.duration}s</div></div>
+      <div class="hit" id="hit"></div></div><div class="lbl">Bản dựng · ${W}×${H}${F?.width ? ' (9:16)' : ''} · ${tl.duration}s</div></div>
     ${hasTpl ? `<div class="pv"><div class="frame" style="height:${fh}px;width:${Math.round(fh * tplAR)}px"><video id="tplv" src="/projects/${S.id}/${tl.template.video}" muted playsinline preload="auto"></video></div>
       <div class="lbl">Mẫu · ${tl.template.duration}s ${tl.template.timeScale !== 1 ? `(co giãn ×${tl.template.timeScale})` : ''}</div></div>` : ''}`;
   S.player = { t: 0, playing: false, sc, raf: 0 };
   const ifr = $('#comp');
-  ifr.onload = () => { const w = ifr.contentWindow; S.player.win = w; applyVolumes(); seek(S.player.t); };
+  ifr.onload = () => {
+    const w = ifr.contentWindow; S.player.win = w;
+    const fr = w.document.getElementById('frame')?.dataset || {};
+    S.player.fr = { fx: Number(fr.fx || 0), fy: Number(fr.fy || 0), fs: Number(fr.fs || 1) };
+    applyVolumes(); seek(S.player.t);
+  };
   $('#playBtn').onclick = () => (S.player.playing ? pause() : play());
   $('#scrub').oninput = (e) => { pause(); seek(Number(e.target.value)); };
   wireHit();
@@ -261,7 +281,10 @@ function stopPlayer() { if (S.player) pause(); S.player = null; }
 // click-select + drag layers on the preview
 function wireHit() {
   const hit = $('#hit'); let drag = null;
-  const toCanvas = (e) => { const r = hit.getBoundingClientRect(); return { x: (e.clientX - r.left) / S.player.sc, y: (e.clientY - r.top) / S.player.sc }; };
+  const toCanvas = (e) => {
+    const r = hit.getBoundingClientRect(), f = S.player.fr || { fx: 0, fy: 0, fs: 1 };
+    return { x: ((e.clientX - r.left) / S.player.sc - f.fx) / f.fs, y: ((e.clientY - r.top) / S.player.sc - f.fy) / f.fs };
+  };
   hit.onmousedown = (e) => {
     const p = toCanvas(e);
     const L = [...S.timeline.layers].filter((l) => l.visible !== false && l.role !== 'kv' && l.role !== 'background').sort((a, b) => (b.z ?? 0) - (a.z ?? 0))
@@ -282,8 +305,8 @@ function wireHit() {
 function showSel() {
   $$('#frame .sel').forEach((x) => x.remove());
   const L = S.timeline.layers.find((l) => l.id === S.sel); if (!L) return;
-  const sc = S.player.sc;
-  $('#frame').insertAdjacentHTML('beforeend', `<div class="sel" style="left:${L.box.x * sc}px;top:${L.box.y * sc}px;width:${L.box.w * sc}px;height:${L.box.h * sc}px"></div>`);
+  const sc = S.player.sc, f = S.player.fr || { fx: 0, fy: 0, fs: 1 }, k = sc * f.fs;
+  $('#frame').insertAdjacentHTML('beforeend', `<div class="sel" style="left:${(f.fx + L.box.x * f.fs) * sc}px;top:${(f.fy + L.box.y * f.fs) * sc}px;width:${L.box.w * k}px;height:${L.box.h * k}px"></div>`);
 }
 
 function drawViz() {

@@ -50,9 +50,14 @@ Thư viện nhạc mẫu đã có sẵn trong `library/music`. Nếu cần tạo
    - **Phân tích & ghi chú**: ngành hàng, sắc thái, nội dung đã duyệt, các sự kiện của mẫu và cách ánh xạ sang lớp, danh sách **lớp cần bổ sung** (kèm nút tải lớp để dựng lại sát mẫu hơn).
    - **Timeline JSON**: sửa trực tiếp hoặc tải `timeline.json` về.
 5. Bấm **Lưu & cập nhật preview**. Ứng dụng chỉ tạo lại TTS cho những câu đã đổi, sau đó mix lại và dựng lại composition.
-6. Bấm **Xuất MP4** để xem thanh tiến độ render. File nằm ở `data/projects/<id>/renders/`; bản mới nhất được sao thêm thành `output.mp4`.
+6. Chọn **Khổ video** ngay trên nút xuất:
+   - **Gốc**: giữ tỷ lệ KV.
+   - **9:16 · TikTok / Reels / Shorts** (1080×1920): KV được đặt trọn trong khung, không cắt nội dung. Phần thừa phía trên/dưới là ảnh KV phóng to làm mờ hoặc một màu tùy chọn.
+   - Ô **Chừa vùng an toàn TikTok** (bật sẵn) giữ KV tránh thanh trên, cột nút bên phải và phần chú thích phía dưới.
+   - Preview cập nhật theo khổ đã chọn. Muốn có cả hai bản thì xuất một lần ở mỗi khổ; file 9:16 có hậu tố `_9x16`.
+7. Bấm **Xuất MP4** để xem thanh tiến độ render. File nằm ở `data/projects/<id>/renders/`; bản mới nhất được sao thêm thành `output.mp4`.
 
-Timeline được lưu tại `data/projects/<id>/timeline.json`, nên bạn có thể mở lại dự án, chỉnh và render lại bất cứ lúc nào.
+Timeline (kể cả khổ video, trường `output`) được lưu tại `data/projects/<id>/timeline.json`, nên bạn có thể mở lại dự án, chỉnh và render lại bất cứ lúc nào.
 
 ## 3. Cấu hình mô hình đọc ảnh (tùy chọn)
 

@@ -17,7 +17,8 @@ export async function renderMp4(p, { log, progress }) {
   writeJSON(path.join(build, 'hyperframes.json'), { paths: { blocks: 'compositions', components: 'compositions/components', assets: 'assets' } });
   fs.mkdirSync(path.join(dir, 'renders'), { recursive: true });
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '').replace('T', '_');
-  const out = path.join(dir, 'renders', `${(p.name || 'kv').replace(/[^\p{L}\p{N}_-]+/gu, '_')}_${stamp}.mp4`);
+  const fmt = tl.output?.format && tl.output.format !== 'original' ? '_' + tl.output.format.replace(':', 'x') : '';
+  const out = path.join(dir, 'renders', `${(p.name || 'kv').replace(/[^\p{L}\p{N}_-]+/gu, '_')}${fmt}_${stamp}.mp4`);
   const args = ['render', '-o', out, '-q', cfg.render.quality || 'standard', '-f', String(tl.canvas.fps || cfg.render.fps || 30), '-w', String(cfg.render.workers || 2), '--quiet'];
   log(`hyperframes ${args.join(' ')}`);
   let last = -1;

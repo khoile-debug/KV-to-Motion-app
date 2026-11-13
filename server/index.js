@@ -8,6 +8,7 @@ import { ROOT, uid, writeJSON } from './util.js';
 import { PIPELINE, REPLAN, UPDATE, pdir, projectsDir, loadProject, saveProject, loadTimeline, saveTimeline, stepPlan, stepScript, stepAudio, stepCompose } from './pipeline.js';
 import { renderMp4 } from './render.js';
 import { IN_PRESETS, LOOP_PRESETS, EASES, FONTS, LOGO_SAFE_IN } from './plan/presets.js';
+import { OUTPUT_FORMATS } from './compose.js';
 import { listMusic, MUSIC_DIR } from './audio/music.js';
 import { providerStatus } from './tts/index.js';
 import { ocrAvailable } from './analyze/ocr.js';
@@ -225,6 +226,7 @@ app.get('/api/config', async (req, res) => {
     music: listMusic(),
     presets: { in: IN_PRESETS, loop: LOOP_PRESETS, eases: EASES, logoSafe: LOGO_SAFE_IN },
     fonts: Object.keys(FONTS),
+    outputFormats: OUTPUT_FORMATS,
     defaults: cfg.defaults,
   });
 });
