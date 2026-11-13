@@ -1,0 +1,125 @@
+{
+  "tracks": [
+    {
+      "id": "upbeat-pop",
+      "title": "Sunny Market",
+      "file": "upbeat-pop.wav",
+      "bpm": 118,
+      "energy": 0.8,
+      "mood": [
+        "energetic",
+        "playful",
+        "sale",
+        "fmcg",
+        "fashion"
+      ],
+      "duration": 16.271,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    },
+    {
+      "id": "calm-ambient",
+      "title": "Soft Morning",
+      "file": "calm-ambient.wav",
+      "bpm": 80,
+      "energy": 0.25,
+      "mood": [
+        "calm",
+        "beauty",
+        "spa",
+        "healthcare",
+        "minimal"
+      ],
+      "duration": 24.0,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    },
+    {
+      "id": "luxury-lounge",
+      "title": "Velvet Night",
+      "file": "luxury-lounge.wav",
+      "bpm": 92,
+      "energy": 0.45,
+      "mood": [
+        "luxury",
+        "elegant",
+        "premium",
+        "cosmetics",
+        "real-estate"
+      ],
+      "duration": 20.87,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    },
+    {
+      "id": "edm-drive",
+      "title": "Flash Deal",
+      "file": "edm-drive.wav",
+      "bpm": 128,
+      "energy": 0.95,
+      "mood": [
+        "energetic",
+        "sale",
+        "tech",
+        "gaming",
+        "sport",
+        "bold"
+      ],
+      "duration": 15.0,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    },
+    {
+      "id": "corporate-bright",
+      "title": "Clear Path",
+      "file": "corporate-bright.wav",
+      "bpm": 104,
+      "energy": 0.55,
+      "mood": [
+        "corporate",
+        "tech",
+        "finance",
+        "trust",
+        "education"
+      ],
+      "duration": 18.462,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    },
+    {
+      "id": "festive-tet",
+      "title": "Spring Lantern",
+      "file": "festive-tet.wav",
+      "bpm": 112,
+      "energy": 0.7,
+      "mood": [
+        "festive",
+        "tet",
+        "family",
+        "food",
+        "warm",
+        "playful"
+      ],
+      "duration": 17.143,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    },
+    {
+      "id": "warm-acoustic",
+      "title": "Home Kitchen",
+      "file": "warm-acoustic.wav",
+      "bpm": 96,
+      "energy": 0.4,
+      "mood": [
+        "warm",
+        "food",
+        "family",
+        "lifestyle",
+        "calm"
+      ],
+      "duration": 20.0,
+      "loopable": true,
+      "license": "Original synthesized by kv-motion (CC0 / owned). Free for commercial use."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "port": 5178,
+  "dataDir": "data",
+  "vision": {
+    "provider": "auto",
+    "model": "claude-opus-5-5",
+    "effort": "medium",
+    "_comment": "provider: auto | claude | heuristic. auto = dùng Claude khi có ANTHROPIC_API_KEY, ngược lại dùng phân tích heuristic + OCR (tesseract)."
+  },
+  "tts": {
+    "provider": "espeak",
+    "voice": "vi",
+    "speed": 1.0,
+    "providers": {
+      "espeak":     { "binary": "espeak-ng", "wpm": 172 },
+      "google":     { "apiKeyEnv": "GOOGLE_TTS_API_KEY", "languageCode": "vi-VN" },
+      "openai":     { "apiKeyEnv": "OPENAI_API_KEY", "model": "gpt-4o-mini-tts" },
+      "elevenlabs": { "apiKeyEnv": "ELEVENLABS_API_KEY", "model": "eleven_multilingual_v2" },
+      "fpt":        { "apiKeyEnv": "FPT_TTS_API_KEY" },
+      "azure":      { "apiKeyEnv": "AZURE_SPEECH_KEY", "regionEnv": "AZURE_SPEECH_REGION", "region": "southeastasia" },
+      "command":    { "cmd": "piper --model ./models/vi_VN-vais1000-medium.onnx --output_file {out}", "stdin": true, "voices": ["default"] }
+    }
+  },
+  "audio": { "musicVolume": 0.8, "voiceVolume": 1.0, "duckDb": 12, "fadeOut": 1.5 },
+  "render": { "fps": 30, "quality": "standard", "workers": 2 },
+  "defaults": { "minDuration": 8, "maxDuration": 10 }
+}

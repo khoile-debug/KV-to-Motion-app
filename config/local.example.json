@@ -1,0 +1,15 @@
+{
+  "_comment": "Sao chép thành config/local.json và sửa. Chỉ cần ghi các khóa muốn ghi đè. API key đặt trong .env (không commit).",
+  "port": 5178,
+  "vision": { "provider": "auto", "model": "claude-opus-5-5", "effort": "medium" },
+  "tts": {
+    "provider": "google",
+    "voice": "vi-VN-Neural2-A",
+    "speed": 1.0,
+    "providers": {
+      "command": { "cmd": "piper --model ./models/vi_VN-vais1000-medium.onnx --output_file {out}", "stdin": true, "voices": ["vais1000"] }
+    }
+  },
+  "audio": { "musicVolume": 0.7, "voiceVolume": 1.0, "duckDb": 14, "fadeOut": 1.5 },
+  "render": { "fps": 30, "quality": "standard", "workers": 2 }
+}
